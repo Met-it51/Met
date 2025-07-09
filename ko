@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบขนส่งผู้โดยสาร</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+    h2 {
+      color: #333;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      margin: 8px 0;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ลงทะเบียนผู้โดยสาร</h2>
+    <input type="text" id="username" placeholder="ชื่อผู้โดยสาร">
+    <input type="email" id="email" placeholder="อีเมล">
+    <button onclick="registerUser()">ลงทะเบียน</button>
+
+    <h2>ตารางเดินรถ</h2>
+    <table id="scheduleTable">
+      <tr><th>เส้นทาง</th><th>เวลาออกเดินทาง</th><th>ราคา</th></tr>
+    </table>
+
+    <h2>จองตั๋ว</h2>
+    <select id="routeSelect"></select>
+    <input type="date" id="travelDate">
+    <button onclick="bookTicket()">จองตั๋ว</button>
+
+    <h3>รายการจอง</h3>
+    <ul id="bookingList"></ul>
+  </div>
+
+  <script>
+    const routes = [
+      { name: "กรุงเทพฯ - เชียงใหม่", time: "08:00", price: 500 },
+      { name: "กรุงเทพฯ - โคราช", time: "10:30", price: 300 },
+      { name: "กรุงเทพฯ - หาดใหญ่", time: "20:00", price: 700 }
+    ];
+
+    let currentUser = null;
+
+    function registerUser() {
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      if (username && email) {
+        currentUser = { name: username, email: email };
+        alert("ลงทะเบียนสำเร็จ คุณ: " + username);
+      } else {
+        alert("กรุณากรอกชื่อและอีเมลให้ครบ");
+      }
+    }
+
+    function populateSchedule() {
+      const table = document.getElementById("scheduleTable");
+      const select = document.getElementById("routeSelect");
+
+      routes.forEach(route => {
+        const row = `<tr><td>${route.name}</td><td>${route.time}</td><td>${route.price} บาท</td></tr>`;
+        table.innerHTML += row;
+
+        const option = document.createElement("option");
+        option.value = route.name;
+        option.text = `${route.name} (${route.time}) - ${route.price} บาท`;
+        select.appendChild(option);
+      });
+    }
+
+    function bookTicket() {
+      if (!currentUser) {
+        alert("กรุณาลงทะเบียนก่อนจองตั๋ว");
+        return;
+      }
+
+      const route = document.getElementById("routeSelect").value;
+      const date = document.getElementById("travelDate").value;
+
+      if (!route || !date) {
+        alert("กรุณาเลือกเส้นทางและวันที่เดินทาง");
+        return;
+      }
+
+      const bookingList = document.getElementById("bookingList");
+      const item = document.createElement("li");
+      item.textContent = `คุณ ${currentUser.name} จองตั๋ว: ${route} วันที่ ${date}`;
+      bookingList.appendChild(item);
+    }
+
+    // เริ่มต้นระบบ
+    populateSchedule();
+  </script>
+</body>
+</html>
